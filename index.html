@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>社内ポータル</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Zen+Kaku+Gothic+New:wght@400;500&display=swap" rel="stylesheet">
+<style>
+/* ============ デザイントークン ============ */
+:root{
+  --color-primary:#4f46e5;
+  --color-surface:#f6f7f9;
+  --color-card:#ffffff;
+  --color-text:#1f2937;
+  --color-text-muted:color-mix(in srgb, var(--color-text) 55%, transparent);
+  --color-border:color-mix(in srgb, var(--color-text) 10%, transparent);
+  --color-primary-tint:color-mix(in srgb, var(--color-primary) 10%, #fff);
+
+  /* カテゴリ用アクセント（ピル・ドットのみで使う意味色） */
+  --cat-chairman:#7c3aed;   /* 会長のお言葉 */
+  --cat-tips:#0d9488;       /* 有益情報 */
+  --cat-notice:#2563eb;     /* お知らせ */
+  --cat-caution:#d97706;    /* 注意・重要 */
+
+  --radius:14px;
+  --radius-sm:10px;
+  --shadow:0 1px 2px rgba(16,24,40,.04),0 4px 12px rgba(16,24,40,.06);
+}
+
+/* ============ リセット（最小） ============ */
+*,*::before,*::after{box-sizing:border-box;}
+body{margin:0;}
+img{display:block;max-width:100%;}
+a{color:inherit;text-decoration:none;}
+button{font:inherit;cursor:pointer;border:none;background:none;color:inherit;}
+
+/* ============ ベース ============ */
+body{
+  font-family:"Zen Kaku Gothic New",system-ui,-apple-system,"Hiragino Kaku Gothic ProN","Noto Sans JP",sans-serif;
+  background:transparent;
+  color:var(--color-text);
+  line-height:1.7;
+  padding:0;
+  -webkit-font-smoothing:antialiased;
+}
+.portal{max-width:1120px;margin-inline:auto;background:var(--color-surface);border-radius:16px;padding:20px;}
+
+/* ============ ヘッダー ============ */
+.portal__header{
+  display:flex;justify-content:space-between;align-items:flex-end;
+  gap:16px;margin-bottom:28px;
+}
+.portal__title{font-size:1.4rem;font-weight:500;margin:0;}
+.portal__lead{font-size:.85rem;color:var(--color-text-muted);margin:2px 0 0;}
+.portal__clock{text-align:right;line-height:1.4;}
+.portal__date{font-size:1rem;font-weight:500;margin:0;}
+.portal__time{font-size:.8rem;color:var(--color-primary);margin:0;font-variant-numeric:tabular-nums;}
+@media (max-width:539px){.portal__clock{display:none;}}
+
+/* ============ 2カラム ============ */
+.portal__grid{display:grid;gap:28px;}
+@media (min-width:1024px){.portal__grid{grid-template-columns:2fr 1fr;}}
+
+/* ============ セクション見出し ============ */
+.section-title{
+  display:flex;align-items:center;gap:8px;
+  font-size:1rem;font-weight:500;margin:0 0 14px;
+}
+.section-title svg{width:18px;height:18px;color:var(--color-primary);}
+.section-title--sub{margin-top:28px;}
+
+/* ============ 業務ツール ============ */
+.tools{
+  display:grid;gap:12px;
+  grid-template-columns:repeat(2,1fr);
+}
+@media (min-width:600px){.tools{grid-template-columns:repeat(3,1fr);}}
+.tool{
+  background:var(--color-card);border:1px solid var(--color-border);
+  border-radius:var(--radius);padding:20px 12px;
+  display:flex;flex-direction:column;align-items:center;gap:10px;text-align:center;
+  min-height:44px;transition:transform .18s ease,box-shadow .18s ease,border-color .18s ease;
+}
+.tool__icon{
+  width:46px;height:46px;border-radius:12px;
+  background:var(--color-primary-tint);color:var(--color-primary);
+  display:flex;align-items:center;justify-content:center;
+  transition:transform .18s ease;
+}
+.tool__icon svg{width:22px;height:22px;}
+.tool__label{font-size:.82rem;font-weight:500;}
+.tool__text{display:flex;flex-direction:column;align-items:center;gap:2px;}
+.tool__sub{font-size:.66rem;color:var(--color-text-muted);line-height:1.35;}
+@media (hover:hover) and (pointer:fine){
+  .tool:hover{transform:translateY(-3px);box-shadow:var(--shadow);border-color:color-mix(in srgb,var(--color-primary) 30%,transparent);}
+  .tool:hover .tool__icon{transform:scale(1.08);}
+}
+@media (hover:none){.tool:active{transform:scale(.98);}}
+.tool:focus-visible{outline:2px solid var(--color-primary);outline-offset:2px;}
+
+/* ============ AI BOT（強調カード）============ */
+.ai-bot{
+  display:flex;align-items:center;gap:14px;
+  background:var(--color-primary);color:#fff;
+  border-radius:var(--radius);padding:16px 18px;margin-bottom:14px;
+  transition:transform .18s ease,box-shadow .18s ease;
+}
+.ai-bot__icon{width:44px;height:44px;border-radius:12px;flex-shrink:0;
+  background:rgba(255,255,255,.16);display:flex;align-items:center;justify-content:center;}
+.ai-bot__icon svg{width:24px;height:24px;}
+.ai-bot__body{flex:1;min-width:0;}
+.ai-bot__title{font-size:.98rem;font-weight:500;display:flex;align-items:center;gap:8px;}
+.ai-bot__badge{font-size:.58rem;font-weight:500;background:rgba(255,255,255,.22);
+  border-radius:999px;padding:1px 8px;letter-spacing:.04em;}
+.ai-bot__sub{font-size:.72rem;opacity:.85;margin-top:2px;}
+.ai-bot__arrow{width:18px;height:18px;flex-shrink:0;opacity:.9;}
+@media (hover:hover) and (pointer:fine){
+  .ai-bot:hover{transform:translateY(-2px);box-shadow:0 8px 20px color-mix(in srgb,var(--color-primary) 35%,transparent);}
+}
+@media (hover:none){.ai-bot:active{transform:scale(.99);}}
+.ai-bot:focus-visible{outline:2px solid var(--color-primary);outline-offset:2px;}
+
+/* ============ 社内マニュアル・規程 ============ */
+.docs{
+  background:var(--color-card);border:1px solid var(--color-border);
+  border-radius:var(--radius);overflow:hidden;
+}
+.doc{
+  display:flex;align-items:center;justify-content:space-between;gap:12px;
+  padding:14px 16px;min-height:44px;transition:background .15s ease;
+}
+.doc+.doc{border-top:1px solid var(--color-border);}
+.doc__main{display:flex;align-items:center;gap:12px;min-width:0;}
+.doc__main svg{width:18px;height:18px;color:var(--color-text-muted);flex-shrink:0;}
+.doc__name{font-size:.86rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.doc__chevron{width:14px;height:14px;color:var(--color-text-muted);flex-shrink:0;}
+.doc:hover{background:color-mix(in srgb,var(--color-primary) 4%,transparent);}
+.doc:focus-visible{outline:2px solid var(--color-primary);outline-offset:-2px;}
+.doc--prep{cursor:default;}
+.doc--prep:hover{background:none;}
+.doc--prep .doc__name{color:var(--color-text-muted);white-space:normal;}
+.doc__badge{flex-shrink:0;font-size:.68rem;font-weight:500;color:var(--color-text-muted);
+  background:color-mix(in srgb,var(--color-text) 6%,transparent);
+  border-radius:999px;padding:3px 10px;}
+
+/* ============ 注目トピック ============ */
+.topics__head{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;}
+.topics__sync{font-size:.62rem;letter-spacing:.08em;text-transform:uppercase;color:var(--color-text-muted);}
+.topics{display:flex;flex-direction:column;gap:12px;}
+
+.topic{
+  display:block;background:var(--color-card);
+  border:1px solid var(--color-border);border-radius:var(--radius);
+  padding:14px;transition:transform .18s ease,box-shadow .18s ease,border-color .18s ease;
+}
+a.topic{cursor:pointer;}
+@media (hover:hover) and (pointer:fine){
+  a.topic:hover{transform:translateY(-2px);box-shadow:var(--shadow);border-color:color-mix(in srgb,var(--color-primary) 25%,transparent);}
+}
+@media (hover:none){a.topic:active{transform:scale(.99);}}
+a.topic:focus-visible{outline:2px solid var(--color-primary);outline-offset:2px;}
+
+.topic__head{display:flex;align-items:center;gap:8px;margin-bottom:8px;flex-wrap:wrap;}
+.topic__pill{
+  font-size:.68rem;font-weight:500;padding:2px 10px;border-radius:999px;
+  display:inline-flex;align-items:center;gap:5px;
+  background:color-mix(in srgb,var(--_cat) 12%,#fff);color:var(--_cat);
+}
+.topic__pill::before{content:"";width:5px;height:5px;border-radius:50%;background:var(--_cat);}
+.topic__author{font-size:.72rem;color:var(--color-text-muted);}
+.topic__date{font-size:.7rem;color:var(--color-text-muted);margin-left:auto;}
+
+.topic__body-wrap{display:flex;gap:12px;}
+.topic__texts{min-width:0;flex:1;}
+.topic__title{
+  font-size:.92rem;font-weight:500;margin:0 0 3px;line-height:1.45;
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+}
+.topic__text{font-size:.8rem;color:var(--color-text-muted);margin:0;}
+.topic__text.is-clamped{
+  display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;
+}
+.topic__thumb{
+  position:relative;width:64px;height:64px;flex-shrink:0;
+  border-radius:var(--radius-sm);overflow:hidden;background:var(--color-primary-tint);
+}
+.topic__thumb img{width:100%;height:100%;object-fit:cover;}
+.topic__thumb-count{
+  position:absolute;right:4px;bottom:4px;
+  font-size:.6rem;font-weight:500;color:#fff;
+  background:rgba(17,24,39,.72);border-radius:999px;padding:1px 6px;
+}
+
+.topic__foot{margin-top:8px;}
+.topic__more{
+  font-size:.76rem;font-weight:500;color:var(--color-primary);
+  display:inline-flex;align-items:center;gap:4px;min-height:auto;padding:2px 0;
+}
+.topic__more svg{width:14px;height:14px;}
+.topic__more:focus-visible{outline:2px solid var(--color-primary);outline-offset:2px;border-radius:4px;}
+.topics__empty{font-size:.82rem;color:var(--color-text-muted);text-align:center;padding:24px 0;}
+
+/* ============ サポート ============ */
+.support{
+  background:var(--color-primary);color:#fff;
+  border-radius:var(--radius);padding:22px;margin-top:24px;
+}
+.support__title{font-size:.95rem;font-weight:500;margin:0 0 6px;}
+.support__text{font-size:.75rem;opacity:.85;margin:0 0 16px;line-height:1.6;}
+.support__btn{
+  width:100%;min-height:44px;background:#fff;color:var(--color-primary);
+  border-radius:var(--radius-sm);font-size:.84rem;font-weight:500;
+  transition:opacity .15s ease;
+}
+.support__btn:hover{opacity:.9;}
+.support__btn:focus-visible{outline:2px solid #fff;outline-offset:2px;}
+
+/* ============ ユーティリティ ============ */
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0 0 0 0);border:0;}
+
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{transition-duration:.01ms!important;animation-duration:.01ms!important;}
+}
+</style>
+</head>
+<body>
+<div class="portal">
+
+  <!-- ヘッダー -->
+  <header class="portal__header">
+    <div>
+      <h1 class="portal__title">社内ポータル</h1>
+      <p class="portal__lead">よく使うツールやリンクに、ここからまとめてアクセスできます。</p>
+    </div>
+    <div class="portal__clock">
+      <p class="portal__date" id="js-date"></p>
+      <p class="portal__time" id="js-time"></p>
+    </div>
+  </header>
+
+  <div class="portal__grid">
+
+    <!-- 左：ツール & マニュアル -->
+    <section aria-labelledby="tools-title">
+      <h2 class="section-title" id="tools-title">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>
+        業務ツール
+      </h2>
+
+      <!-- AI BOT（強調カード） -->
+      <a class="ai-bot" href="https://sites.google.com/crasco.jp/crasco-lm" target="_blank" rel="noopener">
+        <span class="ai-bot__icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M12 3l1.7 4.3L18 9l-4.3 1.7L12 15l-1.7-4.3L6 9z"/><path d="M18 14l.8 2 2 .8-2 .8-.8 2-.8-2-2-.8 2-.8z"/></svg>
+        </span>
+        <span class="ai-bot__body">
+          <span class="ai-bot__title">AI BOT</span>
+          <span class="ai-bot__sub">各部門の業務Botにまとめてアクセス</span>
+        </span>
+        <svg class="ai-bot__arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M7 17L17 7M9 7h8v8"/></svg>
+      </a>
+
+      <div class="tools">
+        <!-- 勤怠管理 -->
+        <a class="tool" href="https://s3.kingtime.jp/independent/recorder/personal/" target="_blank" rel="noopener">
+          <span class="tool__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></span>
+          <span class="tool__text"><span class="tool__label">勤怠管理</span><span class="tool__sub">KING OF TIMEを開く</span></span>
+        </a>
+        <!-- 稟議・申請 -->
+        <a class="tool" href="https://sites.google.com/crasco.jp/workflow/%E3%83%9B%E3%83%BC%E3%83%A0?authuser=0" target="_blank" rel="noopener">
+          <span class="tool__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5"/><path d="M9 14l1.5 1.5L14 12"/></svg></span>
+          <span class="tool__text"><span class="tool__label">稟議・申請</span><span class="tool__sub">ワークフローで申請する</span></span>
+        </a>
+        <!-- 社内QA -->
+        <a class="tool" href="https://notebooklm.google.com/notebook/cb6c5052-6351-44ab-8333-6c207ed34d6c" target="_blank" rel="noopener">
+          <span class="tool__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M9.5 9.5a2.5 2.5 0 0 1 4.5 1.5c0 1.5-2 2-2 3"/><path d="M12 17h.01"/></svg></span>
+          <span class="tool__text"><span class="tool__label">社内QA</span><span class="tool__sub">NotebookLMで調べる</span></span>
+        </a>
+        <!-- Google Chat -->
+        <a class="tool" href="https://chat.google.com" target="_blank" rel="noopener">
+          <span class="tool__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M4 5h16v11H9l-4 4V5z"/><path d="M8 10h.01M12 10h.01M16 10h.01"/></svg></span>
+          <span class="tool__text"><span class="tool__label">Google Chat</span><span class="tool__sub">チャットを開く</span></span>
+        </a>
+        <!-- Googleカレンダー -->
+        <a class="tool" href="https://calendar.google.com" target="_blank" rel="noopener">
+          <span class="tool__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M3 9h18M8 2v4M16 2v4"/></svg></span>
+          <span class="tool__text"><span class="tool__label">Googleカレンダー</span><span class="tool__sub">予定を確認する</span></span>
+        </a>
+        <!-- 書庫（Google Drive 共有ドライブ） -->
+        <a class="tool" href="https://drive.google.com/drive/folders/1_34bBvlW6BqQwuhGnS8pungLtL5lDuaw" target="_blank" rel="noopener">
+          <span class="tool__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><rect x="3" y="4" width="18" height="4" rx="1"/><path d="M5 8v11a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V8"/><path d="M10 12h4"/></svg></span>
+          <span class="tool__text"><span class="tool__label">書庫</span><span class="tool__sub">共有ドライブの資料を見る</span></span>
+        </a>
+      </div>
+
+      <h2 class="section-title section-title--sub" id="docs-title">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M4 5a2 2 0 0 1 2-2h9l5 5v11a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2z"/><path d="M14 3v5h5"/></svg>
+        社内マニュアル・規程
+      </h2>
+      <div class="docs" aria-labelledby="docs-title">
+        <div class="doc doc--prep">
+          <span class="doc__main">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M4 5a2 2 0 0 1 2-2h9l5 5v11a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2z"/><path d="M14 3v5h5"/></svg>
+            <span class="doc__name">準備中です。順次公開予定です。</span>
+          </span>
+          <span class="doc__badge">準備中</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- 右：注目トピック -->
+    <section aria-labelledby="topics-title">
+      <div class="topics__head">
+        <h2 class="section-title" id="topics-title" style="margin-bottom:0;">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M12 3l2.5 5 5.5.8-4 3.9.9 5.5L12 21l-4.9 2.6.9-5.5-4-3.9 5.5-.8z"/></svg>
+          注目トピック
+        </h2>
+        <span class="topics__sync">自動更新</span>
+      </div>
+
+      <div class="topics" id="js-topics" role="list">
+        <p class="topics__empty">読み込み中…</p>
+      </div>
+
+      <div class="support">
+        <p class="support__title">お困りですか？</p>
+        <p class="support__text">ポータルの使い方や、ツールのアクセス権限についてはクラスコテクノロジーまで。</p>
+        <button class="support__btn" type="button" onclick="window.open('https://chat.google.com/dm/?email=sakashita@crasco.jp','_blank','noopener')">問い合わせを送る</button>
+      </div>
+    </section>
+
+  </div>
+</div>
+
+<script>
+/* ===================== 時計 ===================== */
+const fmtD=new Intl.DateTimeFormat('ja-JP',{year:'numeric',month:'long',day:'numeric',weekday:'long'});
+const fmtT=new Intl.DateTimeFormat('ja-JP',{hour:'2-digit',minute:'2-digit',second:'2-digit'});
+const elDate=document.getElementById('js-date');
+const elTime=document.getElementById('js-time');
+function tick(){const n=new Date();elDate.textContent=fmtD.format(n);elTime.textContent=fmtT.format(n);}
+tick();setInterval(tick,1000);
+
+/* ===================== 注目トピック ===================== */
+
+/* このポータルが表示する会社キー（将来グループ会社ごとに分ける想定） */
+const PORTAL_COMPANY='crasco';
+/* 最大表示件数 */
+const MAX_TOPICS=3;
+
+/* カテゴリ → 色（ピル/ドット）。総務が使うカテゴリはここに追加するだけ */
+const CATEGORIES={
+  '会長のお言葉':'var(--cat-chairman)',
+  '有益情報'   :'var(--cat-tips)',
+  'お知らせ'   :'var(--cat-notice)',
+  '注意'       :'var(--cat-caution)',
+};
+
+/* 画像なしトピック用のサンプル画像（見え方確認用のダミー。実運用では実URLが入る） */
+const SAMPLE_IMG='data:image/svg+xml;utf8,'+encodeURIComponent(
+  '<svg xmlns="http://www.w3.org/2000/svg" width="120" height="120"><rect width="120" height="120" fill="#e5e7f5"/><circle cx="42" cy="46" r="14" fill="#c7c9ee"/><path d="M18 104l30-34 22 22 16-16 20 28z" fill="#c7c9ee"/></svg>'
+);
+
+/* 日付を相対表記に */
+function fmtDate(iso){
+  const d=new Date(iso),now=new Date(),day=86400000;
+  const d0=new Date(d.getFullYear(),d.getMonth(),d.getDate());
+  const n0=new Date(now.getFullYear(),now.getMonth(),now.getDate());
+  const diff=Math.round((n0-d0)/day);
+  if(diff===0)return '今日';
+  if(diff===1)return '昨日';
+  return (d.getMonth()+1)+'月'+d.getDate()+'日';
+}
+
+/* ▼▼▼ 仮データ（スプレッドシートの1行＝1件と同じ形）▼▼▼
+   将来はこの配列を GAS(スプレッドシート) から fetch した JSON に差し替えるだけ。
+   列: id / company / published / category / author / title / body / date / url / images */
+const MOCK_TOPICS=[
+  { id:'t-004', company:'crasco', published:true,  category:'会長のお言葉', author:'会長',
+    title:'今月のお言葉', body:'一歩一歩、着実に。変化を恐れず、新しい視点で日々の業務を楽しんでいきましょう。',
+    date:new Date().toISOString(), url:'', images:[] },
+
+  { id:'t-003', company:'crasco', published:true,  category:'お知らせ', author:'総務課',
+    title:'健康診断の日程が確定しました',
+    body:'対象者には個別に案内メールをお送りします。受診期間・会場・持ち物などの詳細は添付の資料をご確認ください。',
+    date:new Date(Date.now()-86400000).toISOString(),
+    url:'https://drive.google.com/drive/folders/1_34bBvlW6BqQwuhGnS8pungLtL5lDuaw', images:[SAMPLE_IMG] },
+
+  { id:'t-002', company:'crasco', published:true,  category:'有益情報', author:'総務課',
+    title:'お盆休みの申請について',
+    body:'来週火曜日が申請の締切です。ワークフローからの申請をお忘れなく。長期休暇に入る前に、引き継ぎ事項の共有と緊急連絡先の確認もあわせてお願いします。承認フローの都合上、締切間際は混み合うため早めのご対応にご協力ください。',
+    date:new Date(Date.now()-2*86400000).toISOString(), url:'', images:[] },
+
+  /* 4件目：新規3件に押し出されて非表示になる例 */
+  { id:'t-001', company:'crasco', published:true,  category:'有益情報', author:'総務課',
+    title:'夏季の節電にご協力ください', body:'昼休みの消灯や空調温度の設定にご協力ください。',
+    date:new Date(Date.now()-10*86400000).toISOString(), url:'', images:[] },
+
+  /* 掲載フラグ false：非表示になる例 */
+  { id:'t-000', company:'crasco', published:false, category:'お知らせ', author:'総務課',
+    title:'（下書き）社内イベントの告知', body:'調整中のため未公開。',
+    date:new Date().toISOString(), url:'', images:[] },
+
+  /* 別会社：会社フィルタで非表示になる例 */
+  { id:'s-001', company:'sister', published:true,  category:'お知らせ', author:'総務課',
+    title:'グループ会社向けお知らせ', body:'この行はcrascoポータルには出ません。',
+    date:new Date().toISOString(), url:'', images:[] },
+];
+
+/* 1件分のカードを生成 */
+function buildCard(t){
+  const cat=CATEGORIES[t.category]||'var(--color-primary)';
+  const hasImg=Array.isArray(t.images)&&t.images.length>0;
+  const hasLink=!!t.url;
+
+  /* リンクあり → <a>（遷移）、なし → <article> */
+  const card=document.createElement(hasLink?'a':'article');
+  card.className='topic';
+  card.setAttribute('role','listitem');
+  card.style.setProperty('--_cat',cat);
+  if(hasLink){card.href=t.url;card.target='_blank';card.rel='noopener';}
+
+  const thumb=hasImg?`
+    <div class="topic__thumb">
+      <img src="${t.images[0]}" alt="${t.title}" width="64" height="64" loading="lazy"
+           onerror="this.style.display='none'">
+      ${t.images.length>1?`<span class="topic__thumb-count">+${t.images.length-1}</span>`:''}
+    </div>`:'';
+
+  const foot=hasLink?`
+    <p class="topic__foot"><span class="topic__more">詳しく見る
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+    </span></p>`:'';
+
+  card.innerHTML=`
+    <div class="topic__head">
+      <span class="topic__pill">${t.category}</span>
+      <span class="topic__author">${t.author}</span>
+      <span class="topic__date">${fmtDate(t.date)}</span>
+    </div>
+    <div class="topic__body-wrap">
+      ${thumb}
+      <div class="topic__texts">
+        <p class="topic__title">${t.title}</p>
+        <p class="topic__text is-clamped">${t.body}</p>
+      </div>
+    </div>
+    ${foot}`;
+
+  /* リンクなしで本文が3行を超える場合のみ「続きを読む」を出す */
+  if(!hasLink){
+    requestAnimationFrame(()=>{
+      const body=card.querySelector('.topic__text');
+      if(body.scrollHeight-body.clientHeight>2){
+        const foot=document.createElement('p');
+        foot.className='topic__foot';
+        const btn=document.createElement('button');
+        btn.type='button';btn.className='topic__more';btn.textContent='続きを読む';
+        btn.addEventListener('click',()=>{
+          const open=body.classList.toggle('is-clamped')===false;
+          btn.firstChild.textContent=open?'閉じる':'続きを読む';
+        });
+        foot.appendChild(btn);
+        card.appendChild(foot);
+      }
+    });
+  }
+  return card;
+}
+
+/* 描画：会社で絞る → 掲載中のみ → 新しい順 → 先頭3件 */
+function renderTopics(data){
+  const box=document.getElementById('js-topics');
+  const list=data
+    .filter(t=>t.company===PORTAL_COMPANY&&t.published)
+    .sort((a,b)=>new Date(b.date)-new Date(a.date))
+    .slice(0,MAX_TOPICS);
+
+  box.innerHTML='';
+  if(list.length===0){
+    box.innerHTML='<p class="topics__empty">注目トピックはありません。</p>';
+    return;
+  }
+  list.forEach(t=>box.appendChild(buildCard(t)));
+}
+
+/* ▼▼▼ スプレッドシート連携（JSONP方式：Googleサイト埋め込みでもCORSに阻まれず動く）▼▼▼
+   下の TOPICS_GAS_URL に、トピック用GASの /exec URL を貼る */
+const TOPICS_GAS_URL='ここにトピック用ウェブアプリのURLを貼り付け';
+window.__topicsCb=function(data){ renderTopics(Array.isArray(data)?data:[]); };
+(function(){
+  const s=document.createElement('script');
+  s.src=TOPICS_GAS_URL+'?callback=__topicsCb';
+  s.onerror=function(){ renderTopics([]); };
+  document.body.appendChild(s);
+})();
+
+/* ※見た目だけ確認したいときは、上のブロックをコメントアウトして
+   renderTopics(MOCK_TOPICS); を使ってください（MOCK_TOPICSは上に残してあります） */
+</script>
+</body>
+</html>
