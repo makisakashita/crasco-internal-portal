@@ -487,7 +487,7 @@ function renderTopics(data){
 
 /* ▼▼▼ スプレッドシート連携（JSONP方式：Googleサイト埋め込みでもCORSに阻まれず動く）▼▼▼
    下の TOPICS_GAS_URL に、トピック用GASの /exec URL を貼る */
-const TOPICS_GAS_URL='ここにトピック用ウェブアプリのURLを貼り付け';
+const TOPICS_GAS_URL='https://script.google.com/macros/s/AKfycbxo-PThnNg5PjQayANcfmyaxIVSSQ8S9IzOhvJeGtp7YQCJV5bpjOmktCLOBm7Ot2r3Cw/exec';
 window.__topicsCb=function(data){ renderTopics(Array.isArray(data)?data:[]); };
 (function(){
   const s=document.createElement('script');
