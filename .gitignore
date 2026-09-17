@@ -1,0 +1,18 @@
+# macOS
+.DS_Store
+._*
+.Spotlight-V100
+.Trashes
+
+# Windows
+Thumbs.db
+Desktop.ini
+
+# エディタ
+.vscode/
+.idea/
+*.swp
+
+# clasp（GAS）— 認証情報は絶対にコミットしない
+.clasprc.json
+gas/.clasprc.json
