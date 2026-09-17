@@ -202,6 +202,26 @@ a.topic:focus-visible{outline:2px solid var(--color-primary);outline-offset:2px;
 .topic__more:focus-visible{outline:2px solid var(--color-primary);outline-offset:2px;border-radius:4px;}
 .topics__empty{font-size:.82rem;color:var(--color-text-muted);text-align:center;padding:24px 0;}
 
+/* ============ 公式SNS ============ */
+.sns{
+  background:var(--color-card);border:1px solid var(--color-border);
+  border-radius:var(--radius);padding:18px;margin-top:24px;
+}
+.sns__title{font-size:.9rem;font-weight:500;margin:0 0 4px;}
+.sns__text{font-size:.72rem;color:var(--color-text-muted);margin:0 0 14px;line-height:1.6;}
+.sns__list{display:flex;flex-wrap:wrap;gap:8px;}
+.sns__item{
+  width:44px;height:44px;border-radius:10px;
+  display:block;flex-shrink:0;overflow:hidden;
+  transition:transform .18s ease,box-shadow .18s ease;
+}
+.sns__item svg{width:100%;height:100%;display:block;}
+@media (hover:hover) and (pointer:fine){
+  .sns__item:hover{transform:translateY(-2px);box-shadow:0 6px 14px rgba(16,24,40,.18);}
+}
+@media (hover:none){.sns__item:active{transform:scale(.95);}}
+.sns__item:focus-visible{outline:2px solid var(--color-primary);outline-offset:2px;}
+
 /* ============ サポート ============ */
 .support{
   background:var(--color-primary);color:#fff;
@@ -360,6 +380,33 @@ a.topic:focus-visible{outline:2px solid var(--color-primary);outline-offset:2px;
       <div class="topics" id="js-topics" role="list">
         <p class="topics__empty">読み込み中…</p>
       </div>
+
+      <section class="sns" aria-labelledby="sns-title">
+        <p class="sns__title" id="sns-title">クラスコ公式SNS</p>
+        <p class="sns__text">フォロー・シェアで、クラスコの発信を応援してください。</p>
+        <div class="sns__list">
+        <a class="sns__item" href="https://www.crasco.jp/sns/#Instagram" target="_blank" rel="noopener">
+          <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 24 24"><defs><clipPath id="ig-clip"><rect width="24" height="24" rx="5" ry="5"/></clipPath></defs><g><g clip-path="url(#ig-clip)"><image width="27" height="28" transform="translate(-1.5 -2)" xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABsAAAAcCAYAAACQ0cTtAAAACXBIWXMAAAsSAAALEgHS3X78AAAFaElEQVRIib2WMa4lSRFFT0RmZdV7v/+f7jYACeEgsZnBGQuxh8FjC5g4Y4OBxBowYQN4wAbwAKHpafr9915VZcTFyPp/hg2QUqmqsrLi5o17MyON77TPf/Z7AfjWUXEsEgcwqCkccESaUyUEtEyqxBziuTqnvTOnKCmqxK//+KW9xLcXkHrfAYHGh5pJd4fiOMIFLYIsjguWyNEPFEHLAV5SzBGcU1zcaBoT/NWffmH1i5/+Vjyv6MA/b51enBZJeBLhPG2ddSq8X3cq4l4Lacb31p0J+M9UcEGReOrJ3UewhxQJLEds++Lz3wiD89pxwCTkRhGEG1OKIjEhJkGVOEmUg9G7nlyqYYBppMrs2/fqEHZI8Xjf6W6UHCPf9KQcqQw3Jg2QSaIhqmDRi37wuCfg2BABMwAxS2xudJwJKEBdeiIDmTEfJpgT3oTYXZxj9DWJiQE6IdKMdox/6EkB0hhymCGDWaIqcQbT+hgibQQ7xUiPCx4j2Q9mb3L0V4kKVKCbaCm6gzQmOymRGd2N3QdzyYgy+irA93uMNKXo5jxFDOr9BQTKkcJypESAMKYQu0E/TNFNQwYZZsMDFmNC9UkJwEkBBrMSt0F/sNDr3W2I/sbuIGNlxkbeKAndDEtYBNfJaR3W5nDoW38YK4GYLF9d985u7EwU4Mnu+HfcZxgrjYWNk3bAuNFoGXyyhXAoaSigplE2UQzWCtUxHlmZCJp1JpJK8sD26riXa3AwTqyvz2Ccc0MYJ+2EjKCydCEMQ5jBQ0J9YuXBb2QaxYJ35UJkARkFeKhXLEf6tn7CZBhG4w7p7HkmKASFSYHjODG2NQxpmGzTAZbAUjbel4/s0XiaP7LHjGssuFZumGC2+/B3+rhwGp0bJ05p3DhTcJKg9EIAMkfuTGZUw3i0G81XzJLz9Ixb8jA9w8GIfNlLxdRWFAX1YR2l0dRJJmbtpCqhSmI4kOO3Y51NHyjWObVnWlkhnVo67eFC7hPaJwox9pzuqFfcAxUBAex4BpmdngIlWGLk+GyVQqdHoc7zhXm6Ub2znC5jw5RR2gZAOV0HuwOMcBQOvXz7fB8UZu4oJiJmMhp3DCMpMejV9z/4O7V2+vVEe7oQ1wX3pDzc8W2DveKnFd0nsIStonVCm9BaIQ1vd5yVfn0EhKIiOY07XQ3MMRnVjq16enOlPu3Uh47C8FOiVWgN/BSoQF4LlMTmHWpgbR/Ae450L88jzXt7kRhkCCcx6vLuhrkwBzsqoTHemRNrOQReOqUG6n5od2g47xBOfjphNiEm8DupQNkQwzxFnVreFuiJVcPPBd0DO1dYd0iQNCy1g3bgPtaOmZDlKC0BWKCYh32LYHMoAdlAiWFUe7tgmVgk9rRgbw32Dq1ACksghe5HEAc20GaYDqASUDs2r7BPmHe8boRmnA5ZCBmV4jAVcMPaNBbEMmFLg/uO1h07LeS/n+HWeS0DGSiBGBOwlmgDpoQmlIYpyD4Ph1tS/bN5LD+zUcMlbCqYO1ombKoQwt6ewVfsfSG/Xg+QYS6FYBM298HYE5s6dMdLJ7IMN/pDAxvBMRt3twGyj7JDCts7OlfYOlYNfVbRGug5secgP1byGx+nmz3J3UgTSSAzoI2j3Kc//FzUBZsqisTmhpWC1m2wzUTXFXNBBLpu6LqBgz51dBXxwej/aMSHSt4K/esTSqevC2jiJ3/9yiqAPy0wL9jpfAQpg+U8nISD1YLWdeja8zDNoVMVuhT8DeQ/C7YX6hzkZZxFfvyXr4yjRL22699+KVqDqb2mVLf70OX5Crc7YOibC3re0McNPYv8BvKDkRcn/1XISyV6QbfCj/78u//B+L+1/wLh7E3g/pIoHgAAAABJRU5ErkJggg=="/></g><path fill="#ffffff" d="M15.67,20.85h-7.35c-2.85,0-5.18-2.32-5.18-5.17v-7.35c0-2.85,2.32-5.18,5.18-5.18h7.35c2.85,0,5.18,2.32,5.18,5.18v7.35c0,2.85-2.32,5.17-5.18,5.17ZM8.33,4.8c-1.94,0-3.53,1.58-3.53,3.53v7.35c0,1.94,1.58,3.52,3.53,3.52h7.35c1.94,0,3.52-1.58,3.52-3.52v-7.35c0-1.94-1.58-3.53-3.52-3.53h-7.35Z"/><path fill="#ffffff" d="M12,16.58c-2.52,0-4.57-2.05-4.57-4.57s2.05-4.58,4.57-4.58,4.57,2.05,4.57,4.58-2.05,4.57-4.57,4.57ZM12,9.07c-1.61,0-2.92,1.31-2.92,2.93s1.31,2.92,2.92,2.92,2.92-1.31,2.92-2.92-1.31-2.93-2.92-2.93Z"/><path fill="#ffffff" d="M17.83,7.28c0,.61-.49,1.1-1.1,1.1s-1.1-.49-1.1-1.1.49-1.1,1.1-1.1,1.1.49,1.1,1.1Z"/></g></svg>
+          <span class="sr-only">Instagram</span>
+        </a>
+        <a class="sns__item" href="https://www.crasco.jp/sns/#Facebook" target="_blank" rel="noopener">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><g><rect fill="#1877f2" width="24" height="24" rx="5" ry="5"/><path fill="#1877f2" d="M9.91,21.51v-8.39h-3.05v-3.47h3.05v-2.64c0-3.01,1.79-4.67,4.53-4.67,1.31,0,2.69.23,2.69.23v2.95h-1.51c-1.49,0-1.96.93-1.96,1.87v2.25h3.33l-.53,3.47h-2.8"/><path fill="#ffffff" d="M16.46,13.12l.53-3.47h-3.33v-2.25c0-.95.46-1.87,1.96-1.87h1.51v-2.95s-1.37-.23-2.69-.23c-2.74,0-4.53,1.66-4.53,4.67v2.64h-3.05v3.47h3.05v8.39c.61.1,1.24.15,1.88.15s1.26-.05,1.88-.15v-8.39h2.8Z"/></g></svg>
+          <span class="sr-only">Facebook</span>
+        </a>
+        <a class="sns__item" href="https://www.crasco.jp/sns/#Twitter" target="_blank" rel="noopener">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><g><rect width="24" height="24" rx="5" ry="5" fill="#000000"/><path fill="#ffffff" d="M13.23,10.98l4.83-5.61h-1.14l-4.19,4.87-3.35-4.87h-3.86l5.06,7.37-5.06,5.89h1.14l4.43-5.15,3.54,5.15h3.86l-5.25-7.64h0ZM11.67,12.81l-.51-.73-4.08-5.84h1.76l3.29,4.71.51.73,4.28,6.13h-1.76l-3.49-5h0Z"/></g></svg>
+          <span class="sr-only">X</span>
+        </a>
+        <a class="sns__item" href="https://www.crasco.jp/sns/#tv" target="_blank" rel="noopener">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><g><rect fill="#212121" width="24" height="24" rx="5" ry="5"/><path fill="#ed3023" d="M19.6,8.18c-.18-.68-.72-1.22-1.4-1.4-1.24-.33-6.2-.33-6.2-.33,0,0-4.96,0-6.2.33-.68.18-1.22.72-1.4,1.4-.33,1.24-.33,3.82-.33,3.82,0,0,0,2.58.33,3.82.18.68.72,1.22,1.4,1.4,1.24.33,6.2.33,6.2.33,0,0,4.96,0,6.2-.33.68-.18,1.22-.72,1.4-1.4.33-1.24.33-3.82.33-3.82,0,0,0-2.58-.33-3.82Z"/><polygon fill="#ffffff" points="10.41 14.38 14.54 12 10.41 9.62 10.41 14.38"/></g></svg>
+          <span class="sr-only">YouTube</span>
+        </a>
+        <a class="sns__item" href="https://www.crasco.jp/sns/#TikTok" target="_blank" rel="noopener">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><g><rect width="24" height="24" rx="5" ry="5" fill="#000000"/><path fill="#ffffff" d="M16.23,7.85c-.75-.49-1.28-1.26-1.45-2.17-.04-.2-.06-.4-.06-.6h-2.38v9.54c-.04,1.07-.92,1.93-2,1.93-.34,0-.65-.08-.93-.23-.64-.34-1.07-1-1.07-1.77,0-1.1.9-2,2-2,.21,0,.4.03.59.09v-2.43c-.19-.03-.39-.04-.59-.04-2.42,0-4.38,1.97-4.38,4.38,0,1.48.74,2.79,1.87,3.59.71.5,1.58.79,2.51.79,2.42,0,4.38-1.97,4.38-4.38v-4.84c.93.67,2.08,1.07,3.31,1.07v-2.38c-.67,0-1.28-.2-1.8-.54Z"/></g></svg>
+          <span class="sr-only">TikTok</span>
+        </a>
+        </div>
+      </section>
 
       <div class="support">
         <p class="support__title">お困りですか？</p>
